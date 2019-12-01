@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TourManagement.API.Dtos;
+using TourManagement.API.Helpers;
 using TourManagement.API.Services;
 
 namespace TourManagement.API.Controllers
@@ -28,7 +29,9 @@ namespace TourManagement.API.Controllers
         }
 
 
-        [HttpGet("{tourId}", Name = "GetTour")]
+        [HttpGet("{tourId}")]
+        [RequestHeaderMatchesMediaType("accept", 
+            new string[] { "application/vnd.iron.tour+json" })]
         public async Task<IActionResult> GetTour(Guid tourId)
         {
             var tourFromRepo = await _tourManagementRepository.GetTour(tourId);
@@ -41,6 +44,26 @@ namespace TourManagement.API.Controllers
             var tour = Mapper.Map<Tour>(tourFromRepo);
 
             return Ok(tour);
-        }        
+        }
+
+        [HttpGet("{tourId}")]
+        [RequestHeaderMatchesMediaType("accept",
+            new string[] { "application/vnd.iron.tourwithestimatedprofits+json" })]
+        public async Task<IActionResult> GetTourWithEstimatedProfits(Guid tourId)
+        {
+            var tourFromRepo = await _tourManagementRepository.GetTour(tourId);
+
+            if (tourFromRepo == null)
+            {
+                return BadRequest();
+            }
+
+            var tour = Mapper.Map<Tour>(tourFromRepo);
+
+            return Ok(tour);
+        }
+
+        
+
     }
 }
