@@ -3,3 +3,7 @@
 ################################################################################
 
 /.vs/TourManagement
+/TourManagement.API/bin/Debug/netcoreapp2.0
+/TourManagement.API/.vscode
+/TourManagement.API/obj
+/TourManagement.Client/node_modules
