@@ -26,13 +26,26 @@ namespace TourManagement.API
         {
             services.AddMvc(setupAction =>
             {
-                setupAction.ReturnHttpNotAcceptable = true;
+                //setupAction.ReturnHttpNotAcceptable = true;
 
                 var jsonOutputFormatter = setupAction.OutputFormatters
                 .OfType<JsonOutputFormatter>().FirstOrDefault();
 
-                //TODO: support output formatter of custom media types - when we send information GET
-                if(jsonOutputFormatter != null)
+                /*TODO: support output formatter of custom media types - when we send information - GET
+                 * When a Client retrieve information, it needs to specify the custom media type:
+                 * for example: api/tour/1 accept: application/vnd.iron.tour+json
+                 * If we don't declare this custom media type, the API will return 406:NOT ACCEPTABLE 
+                 *      ==> this is for the configuration: setupAction.ReturnHttpNotAcceptable = true;
+                 * If we declare the custom media type, the operation will be successful.
+                 * 
+                 * The client can specify the best media type for him with: accept: application/vnd.iron.tour+json. In this case
+                 * the cliend tell us "application/vnd.iron.tour+json" I really would like that you return to me the data in this format. The API try to achieve that.
+                 * 1) configuration: setupAction.ReturnHttpNotAcceptable = true; AND application/vnd.iron.tour+json Not declared ==> Return error 406 - not acceptable
+                 * 2) configuration: setupAction.ReturnHttpNotAcceptable = false; AND application/vnd.iron.tour+json Not declared ==> Return 200 but the content-type=application/json
+                 *      ==> by default an api net core try to return the data in the client preference format but if this format is not available, return JSON
+                 * 3) configuration: setupAction.ReturnHttpNotAcceptable = true/false; AND application/vnd.iron.tour+json is declared ==> Return 200 but the content-type=application/vnd.iron.tour+json
+                */
+                if (jsonOutputFormatter != null)
                 {
                     jsonOutputFormatter.SupportedMediaTypes
                     .Add("application/vnd.iron.tour+json");

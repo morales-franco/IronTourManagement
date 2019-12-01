@@ -34,22 +34,18 @@ namespace TourManagement.API.Controllers
             new string[] { "application/vnd.iron.tour+json" })]
         public async Task<IActionResult> GetTour(Guid tourId)
         {
-            var tourFromRepo = await _tourManagementRepository.GetTour(tourId);
-
-            if (tourFromRepo == null)
-            {
-                return BadRequest();
-            }
-
-            var tour = Mapper.Map<Tour>(tourFromRepo);
-
-            return Ok(tour);
+            return await GetSpecificTour<Tour>(tourId);
         }
 
         [HttpGet("{tourId}")]
         [RequestHeaderMatchesMediaType("accept",
             new string[] { "application/vnd.iron.tourwithestimatedprofits+json" })]
         public async Task<IActionResult> GetTourWithEstimatedProfits(Guid tourId)
+        {
+            return await GetSpecificTour<TourWithEstimatedProfits>(tourId);
+        }
+
+        private async Task<IActionResult> GetSpecificTour<T>(Guid tourId) where T : class
         {
             var tourFromRepo = await _tourManagementRepository.GetTour(tourId);
 
@@ -58,12 +54,10 @@ namespace TourManagement.API.Controllers
                 return BadRequest();
             }
 
-            var tour = Mapper.Map<Tour>(tourFromRepo);
-
-            return Ok(tour);
+            return Ok(Mapper.Map<T>(tourFromRepo));
         }
 
-        
+
 
     }
 }
