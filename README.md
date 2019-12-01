@@ -3,3 +3,4 @@
 
 ## Topics
 1. vendor-specific media type (alternative to application/json to tight the contract between the Client & API)
+2. Output formatters
