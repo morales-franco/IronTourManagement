@@ -52,6 +52,18 @@ namespace TourManagement.API
 
                     jsonOutputFormatter.SupportedMediaTypes
                     .Add("application/vnd.iron.tourwithestimatedprofits+json");
+
+                    jsonOutputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.tourwithshows+json");
+
+                    jsonOutputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.tourwithestimatedprofitsandshows+json");
+
+                    jsonOutputFormatter.SupportedMediaTypes
+                   .Add("application/vnd.iron.tourwithshowsforcreation+json");
+
+                    jsonOutputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.tourwithmanagerandshowsforcreation+json");
                 }
 
                 var jsonInputFormatter = setupAction.InputFormatters
@@ -137,6 +149,16 @@ namespace TourManagement.API
 
                 config.CreateMap<Dtos.TourForCreation, Entities.Tour>();
                 config.CreateMap<Dtos.TourWithManagerForCreation, Entities.Tour>();
+
+                config.CreateMap<Entities.Tour, Dtos.TourWithShows>()
+                    .ForMember(d => d.Band, o => o.MapFrom(s => s.Band.Name));
+
+                config.CreateMap<Entities.Tour, Dtos.TourWithEstimatedProfitsAndShows>()
+                   .ForMember(d => d.Band, o => o.MapFrom(s => s.Band.Name));
+
+                config.CreateMap<Dtos.TourWithShowsForCreation, Entities.Tour>();
+                config.CreateMap<Dtos.TourWithManagerAndShowsForCreation, Entities.Tour>();
+                config.CreateMap<Dtos.ShowForCreation, Entities.Show>();
             });
 
             // Enable CORS

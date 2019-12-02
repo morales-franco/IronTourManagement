@@ -75,9 +75,26 @@ namespace TourManagement.API.Controllers
             return await GetSpecificTour<TourWithEstimatedProfits>(tourId);
         }
 
-        private async Task<IActionResult> GetSpecificTour<T>(Guid tourId) where T : class
+        [HttpGet("{tourId}")]
+        [RequestHeaderMatchesMediaType("accept",
+            new string[] { "application/vnd.iron.tourwithshows+json" })]
+        public async Task<IActionResult> GetTourWithShows(Guid tourId)
         {
-            var tourFromRepo = await _tourManagementRepository.GetTour(tourId);
+            return await GetSpecificTour<TourWithShows>(tourId, true);
+        }
+
+        [HttpGet("{tourId}")]
+        [RequestHeaderMatchesMediaType("accept",
+            new string[] { "application/vnd.iron.tourwithestimatedprofitsandshows+json" })]
+        public async Task<IActionResult> GetTourWithEstimatedProfitsAndShows(Guid tourId)
+        {
+            return await GetSpecificTour<TourWithEstimatedProfitsAndShows>(tourId, true);
+        }
+
+        private async Task<IActionResult> GetSpecificTour<T>(Guid tourId,
+            bool includeShows = false) where T : class
+        {
+            var tourFromRepo = await _tourManagementRepository.GetTour(tourId, includeShows);
 
             if (tourFromRepo == null)
             {
@@ -139,6 +156,37 @@ namespace TourManagement.API.Controllers
                 new { tourId = tourToReturn.TourId },
                 tourToReturn);
 
+        }
+
+        [HttpPost]
+        [RequestHeaderMatchesMediaType("Content-Type",
+           new[] { "application/json", "application/vnd.iron.tourwithshowsforcreation+json" })]
+        public async Task<IActionResult> AddTourWithShows([FromBody] TourWithShowsForCreation tour)
+        {
+            if (tour == null)
+            {
+                return BadRequest();
+            }
+
+            //validation of the DTO happens here
+
+            return await AddSpecificTour(tour);
+        }
+
+        [HttpPost]
+        [RequestHeaderMatchesMediaType("Content-Type",
+           new[] { "application/json", "application/vnd.iron.tourwithmanagerandshowsforcreation+json" })]
+        public async Task<IActionResult> AddTourWithManagerAndShows(
+            [FromBody] TourWithManagerAndShowsForCreation tour)
+        {
+            if (tour == null)
+            {
+                return BadRequest();
+            }
+
+            //validation of the DTO happens here
+
+            return await AddSpecificTour(tour);
         }
 
 

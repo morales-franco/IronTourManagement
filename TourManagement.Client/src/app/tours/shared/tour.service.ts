@@ -10,6 +10,8 @@ import { BaseService } from '../../shared/base.service';
 import { TourWithEstimatedProfits } from './tour-with-estimated-profits.model';
 import { TourWithManagerForCreation } from './tour-with-manager-for-creation.model';
 import { TourForCreation } from './tour-for-creation.model';
+import { TourWithEstimatedProfitsAndShows } from './tour-with-estimated-profits-and-shows.model';
+import { TourWithShows } from './tour-with-shows.model';
 
 @Injectable()
 export class TourService extends BaseService {
@@ -29,6 +31,16 @@ export class TourService extends BaseService {
     getTourWithEstimatedProfits(tourId: string): Observable<TourWithEstimatedProfits> {
         return this.http.get<TourWithEstimatedProfits>(`${this.apiUrl}/tours/${tourId}`,
         { headers: { 'accept': 'application/vnd.iron.tourwithestimatedprofits+json'  } });
+    }
+
+    getTourWithShows(tourId: string): Observable<TourWithShows> {
+        return this.http.get<TourWithShows>(`${this.apiUrl}/tours/${tourId}`,
+        { headers: { 'accept': 'application/vnd.iron.tourwithshows+json'  } });
+    }
+
+    getTourWithEstimatedProfitsAndShows(tourId: string): Observable<TourWithEstimatedProfitsAndShows> {
+        return this.http.get<TourWithEstimatedProfitsAndShows>(`${this.apiUrl}/tours/${tourId}`,
+        { headers: { 'accept': 'application/vnd.iron.tourwithestimatedprofitsandshows+json'  } });
     }
 
     addTour(tourAdd: TourForCreation): Observable<Tour>{

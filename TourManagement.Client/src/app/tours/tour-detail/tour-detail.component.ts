@@ -14,7 +14,7 @@ import { Show } from '../shows/shared/show.model';
 })
 export class TourDetailComponent implements OnInit, OnDestroy {
 
-  private tour: any;
+  tour: any;
   private tourId: string;
   private sub: Subscription;
   private isAdmin: boolean = false;
@@ -32,12 +32,12 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 
         if(this.isAdmin === true){
           //get tour with estimated profits field
-          this.tourService.getTourWithEstimatedProfits(this.tourId)
+          this.tourService.getTourWithEstimatedProfitsAndShows(this.tourId)
           .subscribe(tour => {
             this.tour = tour;
           })
         }else{
-          this.tourService.getTour(this.tourId)
+          this.tourService.getTourWithShows(this.tourId)
           .subscribe(tour => {
             this.tour = tour;  
           });
