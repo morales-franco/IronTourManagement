@@ -18,7 +18,7 @@ namespace TourManagement.API.Controllers
         {
             _tourManagementRepository = tourManagementRepository;
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> GetTours()
         {
@@ -29,8 +29,30 @@ namespace TourManagement.API.Controllers
         }
 
 
+        //TODO: [FromHeader(Name = "Accept")] - In this case we don't use the generic filter: RequestHeaderMatchesMediaType 
+        // We need to receive acceptHeaderValue and then use the if statement to return a Tour Or TourWithEstimatedProfits
+        //[HttpGet("{tourId}")]
+        //public async Task<IActionResult> GetTour(Guid tourId,
+        //    [FromHeader(Name = "Accept")] string acceptHeaderValue)
+        //{
+        //    return await GetSpecificTour<Tour>(tourId);
+        //} 
+
+        /*
+         * TODO: Default GET - When a client call api/tours/123 with Accept: application/json this method will be called.
+         * Another alternative could be to decorate GetTour method with:
+         * [RequestHeaderMatchesMediaType("accept",
+            new string[] { "application/json", "application/vnd.iron.tour+json" })]
+         * But it is not a good practice because we want to fit the deal between the API and Client and if we use application/json it wouldn't be the case.
+         */
         [HttpGet("{tourId}")]
-        [RequestHeaderMatchesMediaType("accept", 
+        public async Task<IActionResult> GetDefaultTour(Guid tourId)
+        {
+            return await GetSpecificTour<Tour>(tourId);
+        }
+
+        [HttpGet("{tourId}", Name = "GetTour")]
+        [RequestHeaderMatchesMediaType("accept",
             new string[] { "application/vnd.iron.tour+json" })]
         public async Task<IActionResult> GetTour(Guid tourId)
         {
@@ -55,6 +77,60 @@ namespace TourManagement.API.Controllers
             }
 
             return Ok(Mapper.Map<T>(tourFromRepo));
+        }
+
+        [HttpPost]
+        [RequestHeaderMatchesMediaType("Content-Type",
+            new[] { "application/json", "application/vnd.iron.tourforcreation+json" })]
+        public async Task<IActionResult> AddTour([FromBody] TourForCreation tour)
+        {
+            if (tour == null)
+            {
+                return BadRequest();
+            }
+
+            //validation of the DTO happens here
+
+            return await AddSpecificTour(tour);
+        }
+
+        [HttpPost]
+        [RequestHeaderMatchesMediaType("Content-Type",
+            new[] { "application/vnd.iron.tourwithmanagerforcreation+json" })]
+        public async Task<IActionResult> AddTour([FromBody] TourWithManagerForCreation tour)
+        {
+            if (tour == null)
+            {
+                return BadRequest();
+            }
+
+            //validation of the DTO happens here
+
+            return await AddSpecificTour(tour);
+        }
+
+        public async Task<IActionResult> AddSpecificTour<T>(T tour) where T : class
+        {
+            var tourEntity = Mapper.Map<Entities.Tour>(tour);
+
+            if (tourEntity.ManagerId == Guid.Empty)
+            {
+                tourEntity.ManagerId = new Guid("fec0a4d6-5830-4eb8-8024-272bd5d6d2bb");
+            }
+
+            await _tourManagementRepository.AddTour(tourEntity);
+
+            if (!await _tourManagementRepository.SaveAsync())
+            {
+                throw new Exception("Adding a tour failed on save");
+            }
+
+            var tourToReturn = Mapper.Map<Tour>(tourEntity);
+
+            return CreatedAtRoute("GetTour",
+                new { tourId = tourToReturn.TourId },
+                tourToReturn);
+
         }
 
 

@@ -8,6 +8,8 @@ import 'rxjs/add/operator/do';
 import { Tour } from './tour.model';
 import { BaseService } from '../../shared/base.service';
 import { TourWithEstimatedProfits } from './tour-with-estimated-profits.model';
+import { TourWithManagerForCreation } from './tour-with-manager-for-creation.model';
+import { TourForCreation } from './tour-for-creation.model';
 
 @Injectable()
 export class TourService extends BaseService {
@@ -27,5 +29,15 @@ export class TourService extends BaseService {
     getTourWithEstimatedProfits(tourId: string): Observable<TourWithEstimatedProfits> {
         return this.http.get<TourWithEstimatedProfits>(`${this.apiUrl}/tours/${tourId}`,
         { headers: { 'accept': 'application/vnd.iron.tourwithestimatedprofits+json'  } });
+    }
+
+    addTour(tourAdd: TourForCreation): Observable<Tour>{
+        return this.http.post<Tour>(`${this.apiUrl}/tours`, tourAdd,
+        { headers: { 'Content-Type': 'application/json'  } });
+    }
+
+    addTourWithManager(tourAdd: TourWithManagerForCreation): Observable<Tour>{
+        return this.http.post<Tour>(`${this.apiUrl}/tours`, tourAdd,
+        { headers: { 'Content-Type': 'application/vnd.iron.tourwithmanagerforcreation+json'  } });
     }
 }

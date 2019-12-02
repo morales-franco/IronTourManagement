@@ -54,6 +54,23 @@ namespace TourManagement.API
                     .Add("application/vnd.iron.tourwithestimatedprofits+json");
                 }
 
+                var jsonInputFormatter = setupAction.InputFormatters
+                .OfType<JsonInputFormatter>().FirstOrDefault();
+
+                /*
+                 * TODO: support input formatter of custom media types - when we receive information - POST
+                 * The client specifies the format of the data (body data) in the Content-Type Header
+                 */
+
+                if (jsonInputFormatter != null)
+                {
+                    jsonInputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.tourforcreation+json");
+
+                    jsonInputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.tourwithmanagerforcreation+json");
+                }
+
             })
             .AddJsonOptions(options =>
             {
@@ -116,7 +133,10 @@ namespace TourManagement.API
 
                 config.CreateMap<Entities.Band, Dtos.Band>();
                 config.CreateMap<Entities.Manager, Dtos.Manager>();
-                config.CreateMap<Entities.Show, Dtos.Show>(); 
+                config.CreateMap<Entities.Show, Dtos.Show>();
+
+                config.CreateMap<Dtos.TourForCreation, Entities.Tour>();
+                config.CreateMap<Dtos.TourWithManagerForCreation, Entities.Tour>();
             });
 
             // Enable CORS
