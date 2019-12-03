@@ -64,6 +64,9 @@ namespace TourManagement.API
 
                     jsonOutputFormatter.SupportedMediaTypes
                     .Add("application/vnd.iron.tourwithmanagerandshowsforcreation+json");
+
+                    jsonOutputFormatter.SupportedMediaTypes
+                   .Add("application/vnd.iron.showcollection+json");
                 }
 
                 var jsonInputFormatter = setupAction.InputFormatters
@@ -81,6 +84,16 @@ namespace TourManagement.API
 
                     jsonInputFormatter.SupportedMediaTypes
                     .Add("application/vnd.iron.tourwithmanagerforcreation+json");
+
+                    jsonInputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.tourwithshowsforcreation+json");
+
+                    jsonInputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.tourwithmanagerandshowsforcreation+json");
+
+                    jsonInputFormatter.SupportedMediaTypes
+                    .Add("application/vnd.iron.showcollectionforcreation+json");
+
                 }
 
             })

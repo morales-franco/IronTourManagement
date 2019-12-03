@@ -22,6 +22,7 @@ import { ErrorLoggerService } from './shared/error-logger.service';
 import { HandleHttpErrorInterceptor } from './shared/handle-http-error-interceptor';
 import { WriteOutJsonInterceptor } from './shared/write-out-json-interceptor';
 import { EnsureAcceptHeaderInterceptor } from './shared/ensure-accept-header-interceptor';
+import { ShowSingleComponent } from './tours/shows/show-single/show-single.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { EnsureAcceptHeaderInterceptor } from './shared/ensure-accept-header-int
     TourAddComponent,
     ToursComponent,
     TourUpdateComponent,
-    ShowAddComponent
+    ShowAddComponent,
+    ShowSingleComponent
   ],
   imports: [
     BrowserModule,
@@ -76,5 +78,21 @@ export class AppModule {
     .forSourceMember('manager', (opts : AutoMapperJs.ISourceMemberConfigurationOptions) => { opts.ignore(); } )
     .forMember('bandid', function(opts) { opts.mapFrom('band'); })
     .forMember('managerid', function(opts) { opts.mapFrom('manager'); });
+
+    automapper.createMap('TourFormModel', 'TourWithShowsForCreation')
+      .forSourceMember('band', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => { opts.ignore(); })
+      .forSourceMember('manager', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => { opts.ignore(); })
+      .forMember('bandid', function (opts) { opts.mapFrom('band'); });
+
+    automapper.createMap('TourFormModel', 'TourWithManagerAndShowsForCreation')
+      .forSourceMember('band', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => 
+      { opts.ignore(); })
+      .forSourceMember('manager', (opts: AutoMapperJs.ISourceMemberConfigurationOptions) => 
+      { opts.ignore(); })
+      .forMember('bandid', function (opts) { opts.mapFrom('band'); })
+      .forMember('managerid', function (opts) { opts.mapFrom('manager'); });
+
+      automapper.createMap('ShowCollectionFormModelShowsArray', 
+      'ShowCollectionForCreation');
   }
 }

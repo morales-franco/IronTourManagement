@@ -7,3 +7,4 @@
 /TourManagement.API/.vscode
 /TourManagement.API/obj
 /TourManagement.Client/node_modules
+/TourManagement.Client/debug.log

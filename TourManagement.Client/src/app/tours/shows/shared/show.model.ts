@@ -1,7 +1,5 @@
-export class Show  {
-    showId: string;
-    venue: string;
-    city: string;
-    country: string;
-    date: Date;
+import { ShowAbstractBase } from "./show-abstract-base.model";
+
+export class Show extends ShowAbstractBase  {
+    showId: string; 
 }

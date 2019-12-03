@@ -12,6 +12,8 @@ import { TourWithManagerForCreation } from './tour-with-manager-for-creation.mod
 import { TourForCreation } from './tour-for-creation.model';
 import { TourWithEstimatedProfitsAndShows } from './tour-with-estimated-profits-and-shows.model';
 import { TourWithShows } from './tour-with-shows.model';
+import { TourWithShowsForCreation } from './tour-with-shows-for-creation.model';
+import { TourWithManagerAndShowsForCreation } from './tour-with-manager-and-shows-for-creation.model';
 
 @Injectable()
 export class TourService extends BaseService {
@@ -50,6 +52,16 @@ export class TourService extends BaseService {
 
     addTourWithManager(tourAdd: TourWithManagerForCreation): Observable<Tour>{
         return this.http.post<Tour>(`${this.apiUrl}/tours`, tourAdd,
-        { headers: { 'Content-Type': 'application/vnd.iron.tourwithmanagerforcreation+json'  } });
+        { headers: { 'Content-Type': 'application/vnd..tourwithmanagerforcreation+json'  } });
+    }
+
+    addTourWithShows(tourToAdd: TourWithShowsForCreation): Observable<Tour> {
+        return this.http.post<Tour>(`${this.apiUrl}/tours`, tourToAdd,
+            { headers: { 'Content-Type': 'application/vnd.iron.tourwithshowsforcreation+json' } });
+    }
+    
+    addTourWithManagerAndShows(tourToAdd: TourWithManagerAndShowsForCreation): Observable<Tour> {
+        return this.http.post<Tour>(`${this.apiUrl}/tours`, tourToAdd,
+            { headers: { 'Content-Type': 'application/vnd.iron.tourwithmanagerandshowsforcreation+json' } });
     }
 }

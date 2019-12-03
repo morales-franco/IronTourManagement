@@ -2,7 +2,7 @@
 
 namespace TourManagement.API.Dtos
 {
-    public class Show  
+    public class Show : ShowAbstractBase
     {
         public Guid ShowId { get; set; }
         

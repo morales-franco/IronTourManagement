@@ -56,6 +56,23 @@
           </div>
         </div>
 
+        <div class="row col-md-2 h3" style="margin-top:10px;">
+            Shows
+          </div>
+  
+          <div class="clearfix"></div>
+
+        <div formArrayName="shows" *ngFor="let show of tourForm.get('shows').controls; let i = index;">
+            <app-show-single [showIndex]="i" [show]="show" (removeShowClicked)="tourForm.get('shows').removeAt($event)"></app-show-single>
+          </div>
+
+          <div class="row">
+            <a class="btn btn-primary" (click)="addShow()" style="width:100px; margin-left:15px; margin-bottom:15px;">Add show</a>
+          </div>
+
+
+
+
         <div class="form-group">
           <div class="col-md-4 col-md-offset-2">
             <span>
