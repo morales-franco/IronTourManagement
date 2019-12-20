@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { Manager } from '../../shared/manager.model';
 import { ShowSingleComponent } from '../shows/show-single/show-single.component';
 import { CustomValidators } from '../../shared/custom-validators';
+import { ValidationErrorHandler } from '../../shared/validation-error-handler';
 
 @Component({
   selector: 'app-tour-add',
@@ -30,7 +31,7 @@ export class TourAddComponent implements OnInit {
 
     // define the tourForm (with empty default values)
     this.tourForm = this.formBuilder.group({
-      band: [''],
+      band: ['', Validators.required],
       manager: [''],
       title: ['', [Validators.required, Validators.maxLength(200)]],
       description: ['', Validators.maxLength(2000)],
@@ -67,9 +68,9 @@ export class TourAddComponent implements OnInit {
             .subscribe(
               () => {
                 this.router.navigateByUrl('/tours');
-              });
-              // (validationResult) => 
-              // { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
+              },
+              (validationResult) => 
+              { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
         }
         else {
 
@@ -82,9 +83,9 @@ export class TourAddComponent implements OnInit {
             .subscribe(
               () => {
                 this.router.navigateByUrl('/tours');
-              });
-              // (validationResult) => 
-              // { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
+              },
+              (validationResult) => 
+              { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
         }
       }
       else {
@@ -97,9 +98,9 @@ export class TourAddComponent implements OnInit {
             .subscribe(
               () => {
                 this.router.navigateByUrl('/tours');
-              });
-              // (validationResult) => 
-              // { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
+              },
+              (validationResult) => 
+              { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
         }
         else {
           let tour = automapper.map(
@@ -110,9 +111,9 @@ export class TourAddComponent implements OnInit {
             .subscribe(
               () => {
                 this.router.navigateByUrl('/tours');
-              });
-            // (validationResult) => 
-            // { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
+              },
+              (validationResult) => 
+              { ValidationErrorHandler.handleValidationErrors(this.tourForm, validationResult); });
         }
       }
     }

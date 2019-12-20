@@ -15,3 +15,6 @@
 11. Basic Angular Validations
 12. Implementing validation in the client level (Angular) - Api level(DTO + Services + E.F Model [Constraints DB])
 13. Implementing HTTP PATCH - To do partial updates API + Angular
+14. Notify validation message in the client - return a structure that we can parse in the Angular App
+15. Custom HTTP Result - HTTP CODE 422 -  Unprocessable entity
+16. Generic validation error - Angular

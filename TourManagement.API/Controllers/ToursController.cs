@@ -130,7 +130,7 @@ namespace TourManagement.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return new UnprocessableEntityObjectResult(ModelState);
             }
 
             var tourEntity = Mapper.Map<Entities.Tour>(tour);
@@ -197,13 +197,13 @@ namespace TourManagement.API.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return new UnprocessableEntityObjectResult(ModelState);
             }
 
             //TODO: If the json patch structure is ok, we need to check that the new model is valid!
             if (!TryValidateModel(tourToPatch))
             {
-                return BadRequest();
+                return new UnprocessableEntityObjectResult(ModelState);
             }
 
 

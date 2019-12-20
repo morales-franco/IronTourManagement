@@ -48,12 +48,12 @@ export class TourService extends BaseService {
 
     addTour(tourAdd: TourForCreation): Observable<Tour>{
         return this.http.post<Tour>(`${this.apiUrl}/tours`, tourAdd,
-        { headers: { 'Content-Type': 'application/json'  } });
+        { headers: { 'Content-Type': 'application/vnd.iron.tourforcreation+json'  } });
     }
 
     addTourWithManager(tourAdd: TourWithManagerForCreation): Observable<Tour>{
         return this.http.post<Tour>(`${this.apiUrl}/tours`, tourAdd,
-        { headers: { 'Content-Type': 'application/vnd..tourwithmanagerforcreation+json'  } });
+        { headers: { 'Content-Type': 'application/vnd.iron.tourwithmanagerforcreation+json'  } });
     }
 
     addTourWithShows(tourToAdd: TourWithShowsForCreation): Observable<Tour> {
