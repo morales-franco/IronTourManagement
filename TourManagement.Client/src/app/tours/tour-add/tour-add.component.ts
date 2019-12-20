@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Band } from '../../shared/band.model';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { MasterDataService } from '../../shared/master-data.service';
 import { TourService } from '../shared/tour.service';
 import { Router } from '@angular/router';
 import { Manager } from '../../shared/manager.model';
 import { ShowSingleComponent } from '../shows/show-single/show-single.component';
+import { CustomValidators } from '../../shared/custom-validators';
 
 @Component({
   selector: 'app-tour-add',
@@ -31,12 +32,12 @@ export class TourAddComponent implements OnInit {
     this.tourForm = this.formBuilder.group({
       band: [''],
       manager: [''],
-      title: [''],
-      description: [''],
-      startDate: [],
-      endDate: [],
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', Validators.maxLength(2000)],
+      startDate: [, Validators.required],
+      endDate: [, Validators.required],
       shows: this.formBuilder.array([])
-    });
+    }, { validator: CustomValidators.StartDateBeforeEndDateValidator });
 
     // get bands from master data service
     this.masterDataService.getBands()

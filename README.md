@@ -11,3 +11,7 @@
 7. Creating child resources together with their parents
 8. Creating collection of resources in one go - api/tours/{tourId}/showcollections"
 9. Model binding - receiving a IEnumerable List in the URI - api/tours/{tourId}/showcollections/(id1,id2, … )
+10. Model validations - DTO Validations - Data Annotations - how important  is to separate the model in different dtos (update|create)? - IValidatableObject
+11. Basic Angular Validations
+12. Implementing validation in the client level (Angular) - Api level(DTO + Services + E.F Model [Constraints DB])
+13. Implementing HTTP PATCH - To do partial updates API + Angular

@@ -6,8 +6,10 @@ import { Band } from '../../shared/band.model';
 import { Subscription } from 'rxjs/Subscription';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common'
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { TourForUpdate } from '../shared/tour-for-update.model';
+import { compare } from 'fast-json-patch';
+import { CustomValidators } from '../../shared/custom-validators';
 
 @Component({
   selector: 'app-tour-update',
@@ -20,6 +22,7 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
   private tour: Tour;
   private tourId: string;
   private sub: Subscription;
+  private originalTourForUpdate: TourForUpdate;
 
   constructor(private masterDataService: MasterDataService,
     private tourService: TourService,
@@ -30,11 +33,12 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // define the tourForm (with empty default values)
     this.tourForm = this.formBuilder.group({
-      title: [''],
-      description: [''],
-      startDate: [],
-      endDate: []
-    });
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', [Validators.required, Validators.maxLength(2000)]],
+      startDate: [, Validators.required],
+      endDate: [, Validators.required]
+    }, { validator: CustomValidators.StartDateBeforeEndDateValidator });
+
  
     // get route data (tourId)
     this.sub = this.route.params.subscribe(
@@ -45,7 +49,13 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
         this.tourService.getTour(this.tourId)
           .subscribe(tour => {
             this.tour = tour;  
-            this.updateTourForm();     
+            this.updateTourForm(); 
+            
+            this.originalTourForUpdate = automapper.map(
+              'TourFormModel',
+              'TourForUpdate',
+              this.tourForm.value);
+
           });
       }
     );
@@ -57,6 +67,7 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
 
   private updateTourForm(): void
   { 
+    //@FM: Date pipe - input date!
     let datePipe = new DatePipe(navigator.language);
     let dateFormat = 'yyyy-MM-dd';
 
@@ -69,8 +80,27 @@ export class TourUpdateComponent implements OnInit, OnDestroy {
   }
 
   saveTour(): void {
-    if (this.tourForm.dirty) {       
-      // TODO
-    } 
-}
+    if (this.tourForm.dirty  && this.tourForm.valid) {       
+      
+      //@FM: PATCH - We're using  https://github.com/Starcounter-Jack/JSON-Patch to compare the original object and the new version.
+       // TODO
+      // [
+      //   { op: "replace", path: "/description", value: "Updated description"}
+      //   {op: "replace", path: "/title", value: "Updated title"}
+      // ]
+
+      let changedTourForUpdate = automapper.map(
+        'TourFormModel',
+        'TourForUpdate',
+        this.tourForm.value);
+
+      let patchDocument = compare(this.originalTourForUpdate, changedTourForUpdate);
+
+      this.tourService.partiallyUpdateTour(this.tourId, patchDocument)
+        .subscribe(
+          () => {
+            this.router.navigateByUrl('/tours');
+          });
+    }
+  } 
 }

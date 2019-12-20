@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using System;
@@ -109,13 +110,6 @@ namespace TourManagement.API.Controllers
             new[] { "application/json", "application/vnd.iron.tourforcreation+json" })]
         public async Task<IActionResult> AddTour([FromBody] TourForCreation tour)
         {
-            if (tour == null)
-            {
-                return BadRequest();
-            }
-
-            //validation of the DTO happens here
-
             return await AddSpecificTour(tour);
         }
 
@@ -124,18 +118,21 @@ namespace TourManagement.API.Controllers
             new[] { "application/vnd.iron.tourwithmanagerforcreation+json" })]
         public async Task<IActionResult> AddTour([FromBody] TourWithManagerForCreation tour)
         {
-            if (tour == null)
-            {
-                return BadRequest();
-            }
-
-            //validation of the DTO happens here
-
             return await AddSpecificTour(tour);
         }
 
         public async Task<IActionResult> AddSpecificTour<T>(T tour) where T : class
         {
+            if (tour == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var tourEntity = Mapper.Map<Entities.Tour>(tour);
 
             if (tourEntity.ManagerId == Guid.Empty)
@@ -163,13 +160,6 @@ namespace TourManagement.API.Controllers
            new[] { "application/json", "application/vnd.iron.tourwithshowsforcreation+json" })]
         public async Task<IActionResult> AddTourWithShows([FromBody] TourWithShowsForCreation tour)
         {
-            if (tour == null)
-            {
-                return BadRequest();
-            }
-
-            //validation of the DTO happens here
-
             return await AddSpecificTour(tour);
         }
 
@@ -179,14 +169,54 @@ namespace TourManagement.API.Controllers
         public async Task<IActionResult> AddTourWithManagerAndShows(
             [FromBody] TourWithManagerAndShowsForCreation tour)
         {
-            if (tour == null)
+            return await AddSpecificTour(tour);
+        }
+
+        //PATH is great and powerfull however it could be complex if we want to update more than one level deep object.
+        [HttpPatch("{tourId}")]
+        public async Task<IActionResult> PartiallyUpdateTour(Guid tourId,
+          [FromBody] JsonPatchDocument<TourForUpdate> jsonPatchDocument)
+        {
+            if (jsonPatchDocument == null)
             {
                 return BadRequest();
             }
 
-            //validation of the DTO happens here
+            var tourFromRepo = await _tourManagementRepository.GetTour(tourId);
 
-            return await AddSpecificTour(tour);
+            if (tourFromRepo == null)
+            {
+                return BadRequest();
+            }
+
+            var tourToPatch = Mapper.Map<TourForUpdate>(tourFromRepo);
+
+            //TODO: jsonPatchDocument was created using an External Angular Library, if this library create
+            // a bad patch document (bad structure) the model state contains an error in this step.
+            jsonPatchDocument.ApplyTo(tourToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            //TODO: If the json patch structure is ok, we need to check that the new model is valid!
+            if (!TryValidateModel(tourToPatch))
+            {
+                return BadRequest();
+            }
+
+
+            Mapper.Map(tourToPatch, tourFromRepo);
+
+            await _tourManagementRepository.UpdateTour(tourFromRepo);
+
+            if (!await _tourManagementRepository.SaveAsync())
+            {
+                throw new Exception("Updating a tour failed on save.");
+            }
+
+            return NoContent();
         }
 
 
